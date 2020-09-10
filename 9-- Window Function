@@ -1,1 +1,55 @@
-This is my code for SQL Practice on https://sqlzoo.net/wiki/Window_functions
+#This is my code for SQL Practice on https://sqlzoo.net/wiki/Window_functions
+
+#1.
+SELECT lastName, party, votes
+FROM ge
+WHERE constituency = 'S14000024' AND yr = 2017
+ORDER BY votes DESC
+
+#2.
+SELECT party,
+       votes,
+       RANK() OVER (ORDER BY votes DESC) as position
+FROM ge
+WHERE constituency = 'S14000024' AND yr = 2017
+ORDER BY party
+
+#3.
+SELECT yr,
+       party,
+       votes,
+       RANK() OVER (PARTITION BY yr ORDER BY votes DESC) as position
+FROM ge
+WHERE constituency = 'S14000021'
+ORDER BY party, yr
+
+#4.
+SELECT constituency,
+       party,
+       votes,
+       RANK() OVER (PARTITION BY constituency ORDER BY votes DESC)
+       ranking
+FROM ge
+WHERE constituency BETWEEN 'S14000021' AND 'S14000026'
+AND yr  = 2017
+ORDER BY ranking, constituency
+
+#5.
+SELECT constituency, party
+FROM (SELECT *,
+             RANK() OVER (PARTITION BY constituency
+                          ORDER BY votes DESC) position
+      FROM ge
+      WHERE constituency BETWEEN 'S14000021' AND 'S14000026'
+      AND yr=2017) rank1
+WHERE position=1
+
+#6.
+SELECT party, COUNT(*)
+FROM (SELECT *,
+      RANK() OVER (PARTITION BY constituency ORDER BY votes DESC) pos
+      FROM ge
+      WHERE constituency LIKE 'S%'
+      AND yr=2017) seats
+WHERE pos=1
+GROUP BY party
