@@ -62,10 +62,10 @@ FROM covid
 WHERE whn = '2020-04-20'
 ORDER BY confirmed DESC
 
-#7. <Invalid answer according to SQL-Zoo>
+#7.
 SELECT world.name,
        ROUND(100000*confirmed/population,0) case100t,
-       RANK() OVER (ORDER BY case100t)
+       RANK() OVER (ORDER BY confirmed/population)
 FROM covid
 JOIN world ON covid.name=world.name
 WHERE whn = '2020-04-20'
