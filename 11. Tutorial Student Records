@@ -1,0 +1,75 @@
+# Reference link https://sqlzoo.net/wiki/DDL_Student_Records
+# In this section I perform creating database and table then perform basic function to analyze the data
+
+#Creating the database
+DROP DATABASE IF EXISTS `sqlzoo`;
+CREATE DATABASE `sqlzoo`;
+
+USE `sqlzoo`;
+
+#Creating table 1 for student
+
+CREATE TABLE student(
+	matric_no CHAR(8) PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    date_of_birth DATE NOT NULL
+    );
+
+INSERT INTO student
+VALUES ('40001010','Daniel','Radcliffe','1989-07-23'),
+       ('40001011','Emma','Watson','1990-04-15'),
+       ('40001012','Rupert','Grint','1988-10-24');
+
+#creating table 2 for module
+
+CREATE TABLE module(
+	module_code CHAR(8) PRIMARY KEY,
+    module_title VARCHAR(50) NOT NULL,
+    level INT(11) NOT NULL,
+    credits INT(11) NOT NULL DEFAULT 20
+    );
+
+INSERT INTO module(
+	module_code,
+    module_title,
+    level
+    )
+VALUES ('HUF07101','Herbology',7),
+       ('SLY07102','Defense Against the Dark Arts',7),
+       ('HUF08102','History of Magic',8);
+
+#creating table 3 for registration with referencing primary key from table 1 and 2
+
+CREATE TABLE registration(
+	matric_no CHAR(8),
+    module_code CHAR(8),
+    result DECIMAL(4,1),
+    PRIMARY KEY(matric_no, module_code),
+    FOREIGN KEY(matric_no) REFERENCES student(matric_no),
+    FOREIGN KEY(module_code) REFERENCES module(module_code)
+    );
+    
+    INSERT INTO registration
+    VALUES ('40001010','SLY07102',90),
+           ('40001010','HUF07101',40),
+           ('40001010','HUF08102',NULL),
+           ('40001011','SLY07102',99),
+           ('40001011','HUF08102',NULL),
+           ('40001012','SLY07102',20),
+           ('40001012','HUF07101',20);
+
+#Perform basic function to view the data more clearly
+
+SELECT s.last_name,
+       s.first_name,
+	   r.result,
+       (CASE
+        WHEN r.result>= 70 THEN 'M'
+        WHEN r.result BETWEEN 40 AND 69 THEN 'P'
+        ELSE 'F'
+        END) grade
+FROM student s
+JOIN registration r ON s.matric_no=r.matric_no
+JOIN module m ON r.module_code=m.module_code
+WHERE m.module_code='SLY07102';
