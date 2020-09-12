@@ -1,0 +1,34 @@
+USE SQLZOO;
+
+CREATE TABLE ge(
+	ons_id VARCHAR(10),
+	ons_region_id VARCHAR(10),
+	constituency_name VARCHAR(50),
+	county_name VARCHAR(50),
+	region_name VARCHAR(50),
+	country_name VARCHAR(50),
+	constituency_type VARCHAR(10),
+	party_name VARCHAR(50),
+	party_abbreviation VARCHAR(50),
+	firstname VARCHAR(50),
+	surname VARCHAR(50),
+	gender VARCHAR(6),
+	sitting_mp VARCHAR(3),
+	former_mp VARCHAR(3),
+	votes INT,
+	`share` FLOAT,
+	`change` VARCHAR(20),
+	PRIMARY KEY(ons_id,firstname,surname)
+	);
+
+#Before executing the code below, must change the 'secure-file-priv' to 'secure-file-priv=""' at "my.ini" file so it can load any file at any folder
+
+LOAD DATA INFILE 'F:/DATA ANALYST/SqlZoo/Student Table/hocl-ge2015-results-full.csv' INTO TABLE ge
+COLUMNS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' LINES TERMINATED BY '\r\n' IGNORE 1 LINES;
+
+#checking the row on table with raw data
+/*
+SELECT COUNT(*)
+FROM ge
+*/
+#3971 row
